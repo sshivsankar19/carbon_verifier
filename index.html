@@ -6,6 +6,7 @@
     <title>CarbonVerify | Carbon Credit Risk Intelligence</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <header class="navbar">
@@ -28,10 +29,15 @@
         <section class="hero card">
             <div>
                 <span class="eyebrow">PRE-TOKENIZATION VERIFICATION</span>
-                <h2>Verify carbon projects<br>before they become credits.</h2>
+
+                <h2>
+                    Verify carbon projects<br>
+                    before they become credits.
+                </h2>
+
                 <p>
                     An independent verification layer that evaluates project claims,
-                    detects risk, and creates a tamper-evident verification record.
+                    detects environmental risk, and creates a tamper-evident verification record.
                 </p>
             </div>
 
@@ -41,23 +47,85 @@
             </div>
         </section>
 
+
         <section class="project-card card">
+
             <div class="card-header">
                 <div>
                     <span class="eyebrow">PROJECT INPUT</span>
                     <h3>Project Details</h3>
                 </div>
+
                 <span class="step">01</span>
             </div>
 
-            <label for="projectSelect">Select Demo Project</label>
+
+            <label for="projectSelect">
+                Select Evidence Record
+            </label>
 
             <select id="projectSelect">
-                <option value="clean">Green Valley Reforestation</option>
-                <option value="risky">Amazon Forest Restoration</option>
+
+                <option value="0">Evidence Record 001</option>
+                <option value="1">Evidence Record 002</option>
+                <option value="2">Evidence Record 003</option>
+                <option value="3">Evidence Record 004</option>
+                <option value="4">Evidence Record 005</option>
+                <option value="5">Evidence Record 006</option>
+                <option value="6">Evidence Record 007</option>
+                <option value="7">Evidence Record 008</option>
+                <option value="8">Evidence Record 009</option>
+                <option value="9">Evidence Record 010</option>
+
+                <option value="10">Evidence Record 011</option>
+                <option value="11">Evidence Record 012</option>
+                <option value="12">Evidence Record 013</option>
+                <option value="13">Evidence Record 014</option>
+                <option value="14">Evidence Record 015</option>
+                <option value="15">Evidence Record 016</option>
+                <option value="16">Evidence Record 017</option>
+                <option value="17">Evidence Record 018</option>
+                <option value="18">Evidence Record 019</option>
+                <option value="19">Evidence Record 020</option>
+
+                <option value="20">Evidence Record 021</option>
+                <option value="21">Evidence Record 022</option>
+                <option value="22">Evidence Record 023</option>
+                <option value="23">Evidence Record 024</option>
+                <option value="24">Evidence Record 025</option>
+                <option value="25">Evidence Record 026</option>
+                <option value="26">Evidence Record 027</option>
+                <option value="27">Evidence Record 028</option>
+                <option value="28">Evidence Record 029</option>
+                <option value="29">Evidence Record 030</option>
+
+                <option value="30">Evidence Record 031</option>
+                <option value="31">Evidence Record 032</option>
+                <option value="32">Evidence Record 033</option>
+                <option value="33">Evidence Record 034</option>
+                <option value="34">Evidence Record 035</option>
+                <option value="35">Evidence Record 036</option>
+                <option value="36">Evidence Record 037</option>
+                <option value="37">Evidence Record 038</option>
+                <option value="38">Evidence Record 039</option>
+                <option value="39">Evidence Record 040</option>
+
+                <option value="40">Evidence Record 041</option>
+                <option value="41">Evidence Record 042</option>
+                <option value="42">Evidence Record 043</option>
+                <option value="43">Evidence Record 044</option>
+                <option value="44">Evidence Record 045</option>
+                <option value="45">Evidence Record 046</option>
+                <option value="46">Evidence Record 047</option>
+                <option value="47">Evidence Record 048</option>
+                <option value="48">Evidence Record 049</option>
+                <option value="49">Evidence Record 050</option>
+
             </select>
 
+
             <div class="input-grid">
+
                 <div>
                     <label>Project ID</label>
                     <input id="projectId" type="text" readonly>
@@ -77,124 +145,283 @@
                     <label>Credits Claimed</label>
                     <input id="credits" type="text" readonly>
                 </div>
+
             </div>
 
-            <button id="verifyBtn">Verify Project <span>→</span></button>
+
+            <div class="evidence-heading">
+                <span class="eyebrow">
+                    INDEPENDENT ENVIRONMENTAL EVIDENCE
+                </span>
+            </div>
+
+
+            <div class="input-grid">
+
+                <div>
+                    <label>Evidence Latitude</label>
+                    <input id="evidenceLat" type="text" readonly>
+                </div>
+
+                <div>
+                    <label>Evidence Longitude</label>
+                    <input id="evidenceLon" type="text" readonly>
+                </div>
+
+                <div>
+                    <label>In-situ GPP</label>
+                    <input id="inSituGpp" type="text" readonly>
+                </div>
+
+                <div>
+                    <label>Reference GPP</label>
+                    <input id="edGpp" type="text" readonly>
+                </div>
+
+            </div>
+
+
+            <button id="verifyBtn">
+                Verify Evidence <span>→</span>
+            </button>
+
         </section>
 
+
         <section class="risk-card card">
+
             <div class="card-header">
+
                 <div>
                     <span class="eyebrow">RISK ENGINE</span>
                     <h3>Risk Assessment</h3>
                 </div>
+
                 <span class="step">02</span>
+
             </div>
+
 
             <div class="risk-score">
                 <div id="riskScore">--</div>
                 <span>/ 100</span>
             </div>
 
+
             <div id="riskStatus" class="risk-status neutral">
                 Awaiting Verification
             </div>
+
 
             <div class="risk-bar">
                 <div id="riskFill"></div>
             </div>
 
+
             <p class="risk-description" id="riskDescription">
-                Submit a project to begin independent verification.
+                Select an evidence record and begin independent verification.
             </p>
+
         </section>
+
 
         <section class="findings-card card">
+
             <div class="card-header">
+
                 <div>
-                    <span class="eyebrow">EXPLAINABLE AI</span>
+                    <span class="eyebrow">
+                        EXPLAINABLE VERIFICATION
+                    </span>
+
                     <h3>Verification Findings</h3>
                 </div>
+
                 <span class="step">03</span>
+
             </div>
+
 
             <div id="findings" class="findings">
+
                 <div class="empty-state">
                     <span>◌</span>
-                    <p>Verification findings will appear here.</p>
+                    <p>
+                        Environmental evidence will appear here.
+                    </p>
                 </div>
+
             </div>
+
         </section>
 
+
         <section class="blockchain-card card">
+
             <div class="card-header">
+
                 <div>
-                    <span class="eyebrow">BLOCKCHAIN AUDIT TRAIL</span>
+                    <span class="eyebrow">
+                        BLOCKCHAIN AUDIT TRAIL
+                    </span>
+
                     <h3>Verification Record</h3>
                 </div>
+
                 <span class="chain-icon">⛓</span>
+
             </div>
+
 
             <div class="chain">
 
+
                 <div class="block">
-                    <div class="block-number">01</div>
-                    <div class="block-content">
-                        <strong>Project Registration</strong>
-                        <span>Project data submitted</span>
-                        <code id="hash1">Waiting...</code>
+
+                    <div class="block-number">
+                        01
                     </div>
+
+                    <div class="block-content">
+
+                        <strong>
+                            Evidence Registration
+                        </strong>
+
+                        <span>
+                            Environmental data submitted
+                        </span>
+
+                        <code id="hash1">
+                            Waiting...
+                        </code>
+
+                    </div>
+
                 </div>
+
 
                 <div class="chain-line"></div>
 
+
                 <div class="block">
-                    <div class="block-number">02</div>
-                    <div class="block-content">
-                        <strong>Independent Verification</strong>
-                        <span>Claims cross-checked</span>
-                        <code id="hash2">Waiting...</code>
+
+                    <div class="block-number">
+                        02
                     </div>
+
+                    <div class="block-content">
+
+                        <strong>
+                            Independent Verification
+                        </strong>
+
+                        <span>
+                            Environmental evidence cross-checked
+                        </span>
+
+                        <code id="hash2">
+                            Waiting...
+                        </code>
+
+                    </div>
+
                 </div>
+
 
                 <div class="chain-line"></div>
 
+
                 <div class="block">
-                    <div class="block-number">03</div>
-                    <div class="block-content">
-                        <strong>Risk Assessment</strong>
-                        <span id="blockStatus">Awaiting result</span>
-                        <code id="hash3">Waiting...</code>
+
+                    <div class="block-number">
+                        03
                     </div>
+
+                    <div class="block-content">
+
+                        <strong>
+                            Risk Assessment
+                        </strong>
+
+                        <span id="blockStatus">
+                            Awaiting result
+                        </span>
+
+                        <code id="hash3">
+                            Waiting...
+                        </code>
+
+                    </div>
+
                 </div>
+
 
             </div>
+
         </section>
 
+
         <section class="stats-card card">
-            <div class="mini-stat">
-                <span>Projects Checked</span>
-                <strong id="projectsChecked">0</strong>
-            </div>
 
             <div class="mini-stat">
-                <span>Flagged</span>
-                <strong id="projectsFlagged">0</strong>
+
+                <span>
+                    Evidence Records
+                </span>
+
+                <strong>
+                    50
+                </strong>
+
             </div>
 
+
             <div class="mini-stat">
-                <span>Verification Layer</span>
-                <strong>Pre-Issuance</strong>
+
+                <span>
+                    Risk Signals
+                </span>
+
+                <strong id="projectsFlagged">
+                    0
+                </strong>
+
             </div>
+
+
+            <div class="mini-stat">
+
+                <span>
+                    Verification Layer
+                </span>
+
+                <strong>
+                    Pre-Issuance
+                </strong>
+
+            </div>
+
         </section>
 
     </main>
 
+
     <footer>
-        <span>CarbonVerify MVP</span>
-        <span>Independent Verification • Explainable Risk • Blockchain Audit Trail</span>
+
+        <span>
+            CarbonVerify MVP
+        </span>
+
+        <span>
+            Independent Evidence • Explainable Risk • Blockchain Audit Trail
+        </span>
+
     </footer>
 
+
+    <script src="data.js"></script>
     <script src="script.js"></script>
+
 </body>
 </html>

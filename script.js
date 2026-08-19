@@ -1,39 +1,3 @@
-const projects = {
-    clean: {
-        name: "Green Valley Reforestation",
-        id: "CV-2026-001",
-        developer: "Green Valley Carbon Ltd.",
-        area: "2,450 hectares",
-        credits: "18,500 tCO₂e",
-        risk: 12,
-        status: "VERIFIED",
-        description: "Low-risk project. Independent checks show strong consistency across submitted project information.",
-        findings: [
-            ["pass", "✓", "Project identity verified", "Registration data matches submitted records."],
-            ["pass", "✓", "Credit quantity consistent", "Claimed credits are within the declared project capacity."],
-            ["pass", "✓", "Spatial boundary verified", "No significant overlap with registered projects detected."],
-            ["pass", "✓", "Project hash integrity verified", "Submitted project data has a valid verification hash."]
-        ]
-    },
-
-    risky: {
-        name: "Amazon Forest Restoration",
-        id: "CV-2026-047",
-        developer: "Amazonia Green Projects",
-        area: "8,700 hectares",
-        credits: "96,000 tCO₂e",
-        risk: 78,
-        status: "FLAGGED",
-        description: "High-risk project. Multiple verification signals indicate inconsistencies requiring further investigation.",
-        findings: [
-            ["pass", "✓", "Project identity verified", "Project registration information is structurally valid."],
-            ["danger", "!", "Spatial overlap detected", "18% of the claimed boundary overlaps another project."],
-            ["warning", "!", "Credit quantity requires review", "Claimed issuance is unusually high relative to the project area."],
-            ["danger", "!", "Independent evidence mismatch", "External verification signals conflict with submitted claims."]
-        ]
-    }
-};
-
 const projectSelect = document.getElementById("projectSelect");
 const verifyBtn = document.getElementById("verifyBtn");
 
@@ -41,6 +5,11 @@ const projectId = document.getElementById("projectId");
 const developer = document.getElementById("developer");
 const area = document.getElementById("area");
 const credits = document.getElementById("credits");
+
+const evidenceLat = document.getElementById("evidenceLat");
+const evidenceLon = document.getElementById("evidenceLon");
+const inSituGpp = document.getElementById("inSituGpp");
+const edGpp = document.getElementById("edGpp");
 
 const riskScore = document.getElementById("riskScore");
 const riskStatus = document.getElementById("riskStatus");
@@ -54,32 +23,42 @@ const hash2 = document.getElementById("hash2");
 const hash3 = document.getElementById("hash3");
 
 const blockStatus = document.getElementById("blockStatus");
-
-const projectsChecked = document.getElementById("projectsChecked");
 const projectsFlagged = document.getElementById("projectsFlagged");
 
-let checked = 0;
 let flagged = 0;
 
-function loadProject() {
-    const project = projects[projectSelect.value];
+function getRecord() {
+    const index = Number(projectSelect.value);
+    return carbonGlobeData[index];
+}
 
-    projectId.value = project.id;
-    developer.value = project.developer;
-    area.value = project.area;
-    credits.value = project.credits;
+function loadProject() {
+    const index = Number(projectSelect.value);
+    const evidence = carbonGlobeData[index];
+
+    projectId.value = `CV-EVID-${String(index + 1).padStart(3, "0")}`;
+    developer.value = "Carbon Project Registry";
+    area.value = `${1000 + index * 125} hectares`;
+    credits.value = `${12000 + index * 850} tCO₂e`;
+
+    evidenceLat.value = evidence.latitude;
+    evidenceLon.value = evidence.longitude;
+    inSituGpp.value = evidence.inSituGpp.toFixed(2);
+    edGpp.value = evidence.edGpp.toFixed(2);
 
     riskScore.textContent = "--";
     riskStatus.textContent = "Awaiting Verification";
     riskStatus.className = "risk-status neutral";
 
     riskFill.style.width = "0%";
-    riskDescription.textContent = "Submit a project to begin independent verification.";
+
+    riskDescription.textContent =
+        "Select an evidence record and begin independent verification.";
 
     findingsContainer.innerHTML = `
         <div class="empty-state">
             <span>◌</span>
-            <p>Verification findings will appear here.</p>
+            <p>Environmental evidence will appear here.</p>
         </div>
     `;
 
@@ -101,23 +80,44 @@ function simpleHash(text) {
         Math.abs(hash * 31).toString(16).padStart(8, "0");
 }
 
-function createBlockHashes(project) {
+function calculateRisk(evidence) {
+    const difference = Math.abs(
+        evidence.inSituGpp - evidence.edGpp
+    );
+
+    const percentageDifference =
+        (difference / evidence.inSituGpp) * 100;
+
+    let risk = Math.round(percentageDifference * 5);
+
+    if (percentageDifference > 8) {
+        risk += 20;
+    }
+
+    if (percentageDifference > 15) {
+        risk += 25;
+    }
+
+    risk = Math.min(100, risk);
+
+    return {
+        difference,
+        percentageDifference,
+        risk
+    };
+}
+
+function createBlockHashes(evidence, result) {
     const first = simpleHash(
-        project.id +
-        project.name +
-        project.developer
+        `${evidence.latitude}|${evidence.longitude}|${evidence.date}`
     );
 
     const second = simpleHash(
-        first +
-        project.area +
-        project.credits
+        `${first}|${evidence.inSituGpp}|${evidence.edGpp}`
     );
 
     const third = simpleHash(
-        second +
-        project.risk +
-        project.status
+        `${second}|${result.risk}|${result.percentageDifference.toFixed(2)}`
     );
 
     hash1.textContent = "0x" + first;
@@ -125,7 +125,62 @@ function createBlockHashes(project) {
     hash3.textContent = "0x" + third;
 }
 
-function displayFindings(findings) {
+function displayFindings(evidence, result) {
+    const findings = [];
+
+    findings.push([
+        "pass",
+        "✓",
+        "Environmental coordinates found",
+        `${evidence.latitude}, ${evidence.longitude}`
+    ]);
+
+    if (result.percentageDifference < 10) {
+        findings.push([
+            "pass",
+            "✓",
+            "Carbon evidence consistent",
+            `GPP difference: ${result.percentageDifference.toFixed(1)}%`
+        ]);
+    } else {
+        findings.push([
+            "danger",
+            "!",
+            "Carbon evidence mismatch",
+            `GPP difference: ${result.percentageDifference.toFixed(1)}%`
+        ]);
+    }
+
+    if (result.risk <= 30) {
+        findings.push([
+            "pass",
+            "✓",
+            "Low environmental risk",
+            "Independent evidence is broadly consistent."
+        ]);
+    } else if (result.risk <= 60) {
+        findings.push([
+            "warning",
+            "!",
+            "Review recommended",
+            "Environmental evidence shows moderate inconsistency."
+        ]);
+    } else {
+        findings.push([
+            "danger",
+            "!",
+            "High-risk evidence signal",
+            "Independent evidence shows significant inconsistency."
+        ]);
+    }
+
+    findings.push([
+        "pass",
+        "✓",
+        "Evidence hash generated",
+        "Verification evidence linked to audit record."
+    ]);
+
     findingsContainer.innerHTML = "";
 
     findings.forEach(finding => {
@@ -147,57 +202,66 @@ function displayFindings(findings) {
     });
 }
 
-function updateRisk(project) {
-    riskScore.textContent = project.risk;
+function updateRisk(result) {
+    const risk = result.risk;
 
-    if (project.risk <= 30) {
-        riskStatus.textContent = project.status;
+    riskScore.textContent = risk;
+
+    if (risk <= 30) {
+        riskStatus.textContent = "VERIFIED";
         riskStatus.className = "risk-status low";
         riskFill.style.background = "var(--green)";
-    } else if (project.risk <= 60) {
+
+        riskDescription.textContent =
+            "Environmental evidence is broadly consistent with the submitted project.";
+    } else if (risk <= 60) {
         riskStatus.textContent = "REVIEW REQUIRED";
         riskStatus.className = "risk-status medium";
         riskFill.style.background = "var(--yellow)";
+
+        riskDescription.textContent =
+            "Environmental evidence requires additional investigation.";
     } else {
-        riskStatus.textContent = project.status;
+        riskStatus.textContent = "FLAGGED";
         riskStatus.className = "risk-status high";
         riskFill.style.background = "var(--red)";
+
+        riskDescription.textContent =
+            "Independent environmental evidence indicates elevated project risk.";
     }
 
-    riskFill.style.width = `${project.risk}%`;
-    riskDescription.textContent = project.description;
+    riskFill.style.width = `${risk}%`;
 }
 
 function verifyProject() {
-    const project = projects[projectSelect.value];
+    const evidence = getRecord();
 
     verifyBtn.disabled = true;
-    verifyBtn.innerHTML = "Verifying...";
+    verifyBtn.innerHTML = "Analyzing Evidence...";
 
     findingsContainer.innerHTML = `
         <div class="empty-state">
             <span>◌</span>
-            <p>Cross-checking project evidence...</p>
+            <p>Cross-checking environmental evidence...</p>
         </div>
     `;
 
     setTimeout(() => {
-        updateRisk(project);
-        displayFindings(project.findings);
-        createBlockHashes(project);
+        const result = calculateRisk(evidence);
+
+        updateRisk(result);
+        displayFindings(evidence, result);
+        createBlockHashes(evidence, result);
 
         blockStatus.textContent =
-            project.status === "VERIFIED"
+            result.risk <= 30
                 ? "Verification accepted"
                 : "Verification flagged";
 
-        checked++;
-
-        if (project.status === "FLAGGED") {
+        if (result.risk > 60) {
             flagged++;
         }
 
-        projectsChecked.textContent = checked;
         projectsFlagged.textContent = flagged;
 
         verifyBtn.disabled = false;
